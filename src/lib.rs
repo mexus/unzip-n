@@ -1,4 +1,21 @@
-//! Unzips an iterator of `n`-length tuple into `n` collections.
+//! Procedural macro for unzipping iterators-over-`n`-length-tuples into `n` collections.
+//!
+//! Here's a brief example of what it is capable of:
+//!
+//! ```
+//! use unzip_n::unzip_n;
+//!
+//! unzip_n!(3);
+//!
+//! fn main() {
+//!     let v = vec![(1, 2, 3), (4, 5, 6)];
+//!     let (v1, v2, v3) = v.into_iter().unzip_n_vec();
+//!
+//!     assert_eq!(v1, &[1, 4]);
+//!     assert_eq!(v2, &[2, 5]);
+//!     assert_eq!(v3, &[3, 6]);
+//! }
+//! ```
 
 extern crate proc_macro;
 
@@ -111,25 +128,24 @@ impl UnzipN {
 /// collections, where `N` is passed to the macro, like `unzip_n(10)`:
 ///
 /// ```
-/// use std::collections::HashSet;
-/// use unzip_n::unzip_n;
-///
+/// # use std::collections::HashSet;
+/// # use unzip_n::unzip_n;
 /// unzip_n!(2);
 /// unzip_n!(5);
 /// unzip_n!(3);
 ///
-/// fn main() {
-///     let v = vec![(1, 2), (3, 4)];
-///     let (s1, s2): (HashSet<_>, HashSet<_>) = v.clone().into_iter().unzip_n();
-///     println!("{:?}, {:?}", s1, s2);
+/// # fn main() {
+/// let v = vec![(1, 2), (3, 4)];
+/// let (s1, s2): (HashSet<_>, HashSet<_>) = v.clone().into_iter().unzip_n();
+/// println!("{:?}, {:?}", s1, s2);
 ///
-///     let (v1, v2) = v.into_iter().unzip_n_vec();
-///     println!("{:?}, {:?}", v1, v2);
+/// let (v1, v2) = v.into_iter().unzip_n_vec();
+/// println!("{:?}, {:?}", v1, v2);
 ///
-///     let v = vec![(1, 2, 3, 4, 5), (6, 7, 8, 9, 10)];
-///     let (v1, v2, v3, v4, v5) = v.into_iter().unzip_n_vec();
-///     println!("{:?}, {:?}, {:?}, {:?}, {:?}", v1, v2, v3, v4, v5);
-/// }
+/// let v = vec![(1, 2, 3, 4, 5), (6, 7, 8, 9, 10)];
+/// let (v1, v2, v3, v4, v5) = v.into_iter().unzip_n_vec();
+/// println!("{:?}, {:?}, {:?}, {:?}, {:?}", v1, v2, v3, v4, v5);
+/// # }
 /// ```
 ///
 /// For example, `unzip_n(3)` will produce a code like the following:
