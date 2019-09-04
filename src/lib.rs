@@ -1,3 +1,7 @@
+//! [![travis](https://api.travis-ci.org/mexus/unzip-n.svg?branch=master)](https://travis-ci.org/mexus/unzip-n)
+//! [![crates.io](https://img.shields.io/crates/v/unzip-n.svg)](https://crates.io/crates/unzip-n)
+//! [![docs.rs](https://docs.rs/unzip-n/badge.svg)](https://docs.rs/unzip-n)
+//!
 //! Procedural macro for unzipping iterators-over-`n`-length-tuples into `n` collections.
 //!
 //! Here's a brief example of what it is capable of:
