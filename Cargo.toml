@@ -1,0 +1,18 @@
+[package]
+name = "unzip-n"
+version = "0.1.0"
+authors = ["mexus"]
+edition = "2018"
+description = "Procedural macro to generate `unzip` for iterators over n-sized tuples"
+keywords = ["iterator", "unzip"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proc-macro2 = "1.0.2"
+quote = "1.0.2"
+syn = "1.0.5"
+
+[lib]
+proc-macro = true
+path = "src/lib.rs"
