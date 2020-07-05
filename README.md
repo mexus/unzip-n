@@ -11,7 +11,10 @@ Here's a brief example of what it is capable of:
 ```rust
 use unzip_n::unzip_n;
 
-unzip_n!(3);
+unzip_n!(pub 3);
+// // Or simply leave the visibility modifier absent for inherited visibility
+// // (which usually means "private").
+// unzip_n!(3);
 
 fn main() {
     let v = vec![(1, 2, 3), (4, 5, 6)];
