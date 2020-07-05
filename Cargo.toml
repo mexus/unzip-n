@@ -1,6 +1,6 @@
 [package]
 name = "unzip-n"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["mexus"]
 edition = "2018"
 description = "Procedural macro to generate `unzip` for iterators over n-sized tuples"

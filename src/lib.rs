@@ -1,3 +1,5 @@
+#![allow(clippy::needless_doctest_main)]
+
 //! [![travis](https://api.travis-ci.org/mexus/unzip-n.svg?branch=master)](https://travis-ci.org/mexus/unzip-n)
 //! [![crates.io](https://img.shields.io/crates/v/unzip-n.svg)](https://crates.io/crates/unzip-n)
 //! [![docs.rs](https://docs.rs/unzip-n/badge.svg)](https://docs.rs/unzip-n)
@@ -9,7 +11,9 @@
 //! ```
 //! use unzip_n::unzip_n;
 //!
-//! unzip_n!(3);
+//! unzip_n!(pub 3);
+//! // // Or just for inherited visibility (which usually means private)
+//! // unzip_n!(3);
 //!
 //! fn main() {
 //!     let v = vec![(1, 2, 3), (4, 5, 6)];
@@ -50,10 +54,12 @@ struct UnzipN {
     generic_types: Vec<syn::Ident>,
     collections: Vec<syn::Ident>,
     trait_name: syn::Ident,
+    visibility: syn::Visibility,
 }
 
 impl Parse for UnzipN {
     fn parse(input: ParseStream) -> parse::Result<Self> {
+        let visibility = input.parse()?;
         let n: usize = input.parse::<syn::LitInt>()?.base10_parse()?;
         let generic_types: Vec<_> = (0..n).map(|id| format_ident!("Type_{}", id)).collect();
         let collections: Vec<_> = (0..n)
@@ -65,6 +71,7 @@ impl Parse for UnzipN {
             generic_types,
             collections,
             trait_name,
+            visibility,
         })
     }
 }
@@ -78,6 +85,7 @@ impl UnzipN {
         let generic_types = &self.generic_types;
         let collections = &self.collections;
         let trait_name = &self.trait_name;
+        let visibility = &self.visibility;
 
         let unzip_n_vec = if no_std {
             TokenStream::new()
@@ -95,7 +103,7 @@ impl UnzipN {
 
         quote!(
             #[doc = #trait_doc]
-            trait #trait_name < #( #generic_types, )* > {
+            #visibility trait #trait_name < #( #generic_types, )* > {
                 /// Unzips an iterator over tuples into a tuple of collections.
                 fn unzip_n<#(#collections,)*>(self) -> ( #(#collections,)* )
                     where
@@ -149,7 +157,8 @@ impl UnzipN {
 /// ```
 /// # use std::collections::HashSet;
 /// # use unzip_n::unzip_n;
-/// unzip_n!(2);
+/// // Note that visiblity modifier is accepted!
+/// unzip_n!(pub(crate) 2);
 /// unzip_n!(5);
 /// unzip_n!(3);
 ///
