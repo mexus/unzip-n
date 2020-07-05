@@ -12,7 +12,8 @@ Here's a brief example of what it is capable of:
 use unzip_n::unzip_n;
 
 unzip_n!(pub 3);
-// // Or just for inherited visibility (which usually means private)
+// // Or simply leave the visibility modifier absent for inherited visibility
+// // (which usually means "private").
 // unzip_n!(3);
 
 fn main() {
