@@ -16,6 +16,9 @@
 //! // // (which usually means "private").
 //! // unzip_n!(3);
 //!
+//! // Giving the trait custom name is also supported:
+//! unzip_n!(pub SomeMagic, 4);
+//!
 //! fn main() {
 //!     let v = vec![(1, 2, 3), (4, 5, 6)];
 //!     let (v1, v2, v3) = v.into_iter().unzip_n_vec();
@@ -23,6 +26,14 @@
 //!     assert_eq!(v1, &[1, 4]);
 //!     assert_eq!(v2, &[2, 5]);
 //!     assert_eq!(v3, &[3, 6]);
+//!
+//!     let v = vec![(1, 2, 3, 4), (5, 6, 7, 8)];
+//!     let (v1, v2, v3, v4) = v.into_iter().unzip_n_vec();
+//!
+//!     assert_eq!(v1, &[1, 5]);
+//!     assert_eq!(v2, &[2, 6]);
+//!     assert_eq!(v3, &[3, 7]);
+//!     assert_eq!(v4, &[4, 8]);
 //! }
 //! ```
 //!
@@ -50,6 +61,8 @@ use syn::{
     parse_macro_input,
 };
 
+mod extended_cfg;
+
 struct UnzipN {
     n: usize,
     generic_types: Vec<syn::Ident>,
@@ -61,12 +74,16 @@ struct UnzipN {
 impl Parse for UnzipN {
     fn parse(input: ParseStream) -> parse::Result<Self> {
         let visibility = input.parse()?;
+        let maybe_trait_name: Option<syn::Ident> = input.parse()?;
+        if maybe_trait_name.is_some() {
+            input.parse::<syn::Token![,]>()?;
+        }
         let n: usize = input.parse::<syn::LitInt>()?.base10_parse()?;
         let generic_types: Vec<_> = (0..n).map(|id| format_ident!("Type_{}", id)).collect();
         let collections: Vec<_> = (0..n)
             .map(|id| format_ident!("Collection_{}", id))
             .collect();
-        let trait_name = format_ident!("Unzip{}", n);
+        let trait_name = maybe_trait_name.unwrap_or_else(|| format_ident!("Unzip{}", n));
         Ok(UnzipN {
             n,
             generic_types,

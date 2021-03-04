@@ -21,3 +21,6 @@ syn = "1.0.5"
 [lib]
 proc-macro = true
 path = "src/lib.rs"
+
+[dev-dependencies]
+syn = { version = "1", features = ["extra-traits"] }
