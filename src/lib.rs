@@ -1,6 +1,4 @@
-#![allow(clippy::needless_doctest_main)]
-
-//! [![travis](https://api.travis-ci.org/mexus/unzip-n.svg?branch=master)](https://travis-ci.org/mexus/unzip-n)
+//! [![CI](https://github.com/mexus/unzip-n/actions/workflows/ci.yml/badge.svg)](https://github.com/mexus/unzip-n/actions/workflows/ci.yml)
 //! [![crates.io](https://img.shields.io/crates/v/unzip-n.svg)](https://crates.io/crates/unzip-n)
 //! [![docs.rs](https://docs.rs/unzip-n/badge.svg)](https://docs.rs/unzip-n)
 //!
@@ -12,26 +10,24 @@
 //! use unzip_n::unzip_n;
 //!
 //! unzip_n!(pub 3);
-//! // // Or simply leave the visibility modifier absent for inherited visibility
-//! // // (which usually means "private").
+//! // Or simply leave the visibility modifier absent for inherited visibility
+//! // (which usually means "private").
 //! // unzip_n!(3);
 //!
-//! fn main() {
-//!     let v = vec![(1, 2, 3), (4, 5, 6)];
-//!     let (v1, v2, v3) = v.into_iter().unzip_n_vec();
+//! let v = vec![(1, 2, 3), (4, 5, 6)];
+//! let (v1, v2, v3) = v.into_iter().unzip_n_vec();
 //!
-//!     assert_eq!(v1, &[1, 4]);
-//!     assert_eq!(v2, &[2, 5]);
-//!     assert_eq!(v3, &[3, 6]);
-//! }
+//! assert_eq!(v1, &[1, 4]);
+//! assert_eq!(v2, &[2, 5]);
+//! assert_eq!(v3, &[3, 6]);
 //! ```
 //!
 //! # License
 //!
 //! Licensed under either of
 //!
-//! * Apache License, Version 2.0 (LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
-//! * MIT license (LICENSE-MIT or http://opensource.org/licenses/MIT)
+//! * Apache License, Version 2.0 (LICENSE-APACHE or <http://www.apache.org/licenses/LICENSE-2.0>)
+//! * MIT license (LICENSE-MIT or <http://opensource.org/licenses/MIT>)
 //!
 //! at your option.
 //!
@@ -40,8 +36,6 @@
 //! Unless you explicitly state otherwise, any contribution intentionally submitted
 //! for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 //! additional terms or conditions.
-
-extern crate proc_macro;
 
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
@@ -137,7 +131,7 @@ impl UnzipN {
                 {
                     #( let mut #containers = #collections :: default() ;)*
                     self.for_each(|( #( #values, )* )| {
-                        #( #containers.extend(Some(#values)) ;)*
+                        #( #containers.extend(std::iter::once(#values)) ;)*
                     });
                     (#( #containers, )* )
                 }
@@ -163,7 +157,6 @@ impl UnzipN {
 /// unzip_n!(5);
 /// unzip_n!(3);
 ///
-/// # fn main() {
 /// let v = vec![(1, 2), (3, 4)];
 /// let (s1, s2): (HashSet<_>, HashSet<_>) = v.clone().into_iter().unzip_n();
 /// println!("{:?}, {:?}", s1, s2);
@@ -174,7 +167,6 @@ impl UnzipN {
 /// let v = vec![(1, 2, 3, 4, 5), (6, 7, 8, 9, 10)];
 /// let (v1, v2, v3, v4, v5) = v.into_iter().unzip_n_vec();
 /// println!("{:?}, {:?}, {:?}, {:?}, {:?}", v1, v2, v3, v4, v5);
-/// # }
 /// ```
 ///
 /// For example, `unzip_n(3)` will produce a code like the following:
