@@ -10,9 +10,26 @@
 //! use unzip_n::unzip_n;
 //!
 //! unzip_n!(pub 3);
+//! use Unzip3 as _; // Just a verification of the trait name.
 //! // Or simply leave the visibility modifier absent for inherited visibility
 //! // (which usually means "private").
 //! // unzip_n!(3);
+//!
+//! let v = vec![(1, 2, 3), (4, 5, 6)];
+//! let (v1, v2, v3) = v.into_iter().unzip_n_vec();
+//!
+//! assert_eq!(v1, &[1, 4]);
+//! assert_eq!(v2, &[2, 5]);
+//! assert_eq!(v3, &[3, 6]);
+//! ```
+//!
+//! Or you could give the trait an explicit name:
+//!
+//! ```
+//! use unzip_n::unzip_n;
+//!
+//! unzip_n!(pub MyTrait 3);
+//! use MyTrait as _; // Just a verification that the trait is generated with the desired name.
 //!
 //! let v = vec![(1, 2, 3), (4, 5, 6)];
 //! let (v1, v2, v3) = v.into_iter().unzip_n_vec();
@@ -55,12 +72,13 @@ struct UnzipN {
 impl Parse for UnzipN {
     fn parse(input: ParseStream) -> parse::Result<Self> {
         let visibility = input.parse()?;
+        let maybe_name = input.parse::<syn::Ident>().ok();
         let n: usize = input.parse::<syn::LitInt>()?.base10_parse()?;
         let generic_types: Vec<_> = (0..n).map(|id| format_ident!("Type_{}", id)).collect();
         let collections: Vec<_> = (0..n)
             .map(|id| format_ident!("Collection_{}", id))
             .collect();
-        let trait_name = format_ident!("Unzip{}", n);
+        let trait_name = maybe_name.unwrap_or_else(|| format_ident!("Unzip{}", n));
         Ok(UnzipN {
             n,
             generic_types,
