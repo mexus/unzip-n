@@ -86,7 +86,7 @@
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 use syn::{
-    parse::{self, discouraged::Speculative, Parse, ParseStream},
+    parse::{self, Parse, ParseStream, discouraged::Speculative},
     parse_macro_input,
     spanned::Spanned,
 };
@@ -535,7 +535,11 @@ mod test {
         let unzip_n: UnzipN = syn::parse2(quote! { 3 }).unwrap();
         let output = unzip_n.generate(false).to_string();
         // Should generate "Unzip3" trait
-        assert!(output.contains("trait Unzip3"), "Expected 'trait Unzip3' in output: {}", output);
+        assert!(
+            output.contains("trait Unzip3"),
+            "Expected 'trait Unzip3' in output: {}",
+            output
+        );
     }
 
     #[test]
@@ -543,8 +547,16 @@ mod test {
         let unzip_n: UnzipN = syn::parse2(quote! { MyTrait 3 }).unwrap();
         let output = unzip_n.generate(false).to_string();
         // Should generate "MyTrait" trait (no number suffix)
-        assert!(output.contains("trait MyTrait <"), "Expected 'trait MyTrait' in output: {}", output);
-        assert!(!output.contains("trait MyTrait3"), "Should not contain 'trait MyTrait3' in output: {}", output);
+        assert!(
+            output.contains("trait MyTrait <"),
+            "Expected 'trait MyTrait' in output: {}",
+            output
+        );
+        assert!(
+            !output.contains("trait MyTrait3"),
+            "Should not contain 'trait MyTrait3' in output: {}",
+            output
+        );
     }
 
     #[test]
@@ -552,9 +564,21 @@ mod test {
         let unzip_n: UnzipN = syn::parse2(quote! { 2..4 }).unwrap();
         let output = unzip_n.generate(false).to_string();
         // Should generate "Unzip2" and "Unzip3" traits
-        assert!(output.contains("trait Unzip2"), "Expected 'trait Unzip2' in output: {}", output);
-        assert!(output.contains("trait Unzip3"), "Expected 'trait Unzip3' in output: {}", output);
-        assert!(!output.contains("trait Unzip4"), "Should not contain 'trait Unzip4' in output: {}", output);
+        assert!(
+            output.contains("trait Unzip2"),
+            "Expected 'trait Unzip2' in output: {}",
+            output
+        );
+        assert!(
+            output.contains("trait Unzip3"),
+            "Expected 'trait Unzip3' in output: {}",
+            output
+        );
+        assert!(
+            !output.contains("trait Unzip4"),
+            "Should not contain 'trait Unzip4' in output: {}",
+            output
+        );
     }
 
     #[test]
@@ -562,9 +586,21 @@ mod test {
         let unzip_n: UnzipN = syn::parse2(quote! { MyTrait 2..4 }).unwrap();
         let output = unzip_n.generate(false).to_string();
         // Should generate "MyTrait2" and "MyTrait3" traits
-        assert!(output.contains("trait MyTrait2"), "Expected 'trait MyTrait2' in output: {}", output);
-        assert!(output.contains("trait MyTrait3"), "Expected 'trait MyTrait3' in output: {}", output);
-        assert!(!output.contains("trait MyTrait4"), "Should not contain 'trait MyTrait4' in output: {}", output);
+        assert!(
+            output.contains("trait MyTrait2"),
+            "Expected 'trait MyTrait2' in output: {}",
+            output
+        );
+        assert!(
+            output.contains("trait MyTrait3"),
+            "Expected 'trait MyTrait3' in output: {}",
+            output
+        );
+        assert!(
+            !output.contains("trait MyTrait4"),
+            "Should not contain 'trait MyTrait4' in output: {}",
+            output
+        );
     }
 
     #[test]
@@ -572,14 +608,26 @@ mod test {
         let unzip_n: UnzipN = syn::parse2(quote! { 2..=3 }).unwrap();
         let output = unzip_n.generate(false).to_string();
         // Should generate "Unzip2" and "Unzip3" traits (inclusive)
-        assert!(output.contains("trait Unzip2"), "Expected 'trait Unzip2' in output: {}", output);
-        assert!(output.contains("trait Unzip3"), "Expected 'trait Unzip3' in output: {}", output);
+        assert!(
+            output.contains("trait Unzip2"),
+            "Expected 'trait Unzip2' in output: {}",
+            output
+        );
+        assert!(
+            output.contains("trait Unzip3"),
+            "Expected 'trait Unzip3' in output: {}",
+            output
+        );
     }
 
     #[test]
     fn generate_pub_visibility() {
         let unzip_n: UnzipN = syn::parse2(quote! { pub 3 }).unwrap();
         let output = unzip_n.generate(false).to_string();
-        assert!(output.contains("pub trait Unzip3"), "Expected 'pub trait Unzip3' in output: {}", output);
+        assert!(
+            output.contains("pub trait Unzip3"),
+            "Expected 'pub trait Unzip3' in output: {}",
+            output
+        );
     }
 }
